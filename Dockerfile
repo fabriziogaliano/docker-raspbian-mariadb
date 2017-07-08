@@ -71,7 +71,7 @@ ENV MARIADB_VERSION 10.3.0+mariajessie
 # add repository pinning to make sure dependencies from this MariaDB repo are preferred over Debian dependencies
 #  libmariadbclient18 : Depends: libmysqlclient18 (= 5.5.42+maria-1wheezy) but 5.5.43-0+deb7u1 is to be installed
 
-RUN apt install -yf \
+RUN apt update && apt install -yf \
     mariadb-server \
     percona-xtrabackup \
     percona-toolkit
