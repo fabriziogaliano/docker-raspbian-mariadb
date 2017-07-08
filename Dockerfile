@@ -52,24 +52,29 @@ RUN set -ex; \
         rm -r "$GNUPGHOME"; \
         apt-key list
 
-RUN echo "deb https://repo.percona.com/apt jessie main rpi" > /etc/apt/sources.list.d/percona.list \
-        && { \
-                echo 'Package: *'; \
-                echo 'Pin: release o=Percona Development Team'; \
-                echo 'Pin-Priority: 998'; \
-        } > /etc/apt/preferences.d/percona
+# RUN echo "deb https://repo.percona.com/apt jessie main rpi" > /etc/apt/sources.list.d/percona.list \
+#         && { \
+#                 echo 'Package: *'; \
+#                 echo 'Pin: release o=Percona Development Team'; \
+#                 echo 'Pin-Priority: 998'; \
+#         } > /etc/apt/preferences.d/percona
 
 ENV MARIADB_MAJOR 10.3
 ENV MARIADB_VERSION 10.3.0+mariajessie
 
-RUN echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian jessie main rpi" > /etc/apt/sources.list.d/mariadb.list \
-        && { \
-                echo 'Package: *'; \
-                echo 'Pin: release o=MariaDB'; \
-                echo 'Pin-Priority: 999'; \
-        } > /etc/apt/preferences.d/mariadb
+# RUN echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian jessie main rpi" > /etc/apt/sources.list.d/mariadb.list \
+#         && { \
+#                 echo 'Package: *'; \
+#                 echo 'Pin: release o=MariaDB'; \
+#                 echo 'Pin-Priority: 999'; \
+#         } > /etc/apt/preferences.d/mariadb
 # add repository pinning to make sure dependencies from this MariaDB repo are preferred over Debian dependencies
 #  libmariadbclient18 : Depends: libmysqlclient18 (= 5.5.42+maria-1wheezy) but 5.5.43-0+deb7u1 is to be installed
+
+RUN apt install -yf \
+    mariadb-server \
+    percona-xtrabackup \
+    percona-toolkit
 
 # the "/var/lib/mysql" stuff here is because the mysql-server postinst doesn't have an explicit way to disable the mysql_install_db codepath besides having a database already "configured" (ie, stuff in /var/lib/mysql/mysql)
 # also, we set debconf keys to make APT a little quieter
