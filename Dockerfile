@@ -7,9 +7,8 @@ FROM sdhibit/rpi-raspbian:jessie
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 # add gosu for easy step-down from root
-ENV GOSU_VERSION 1.7 \
-    DEBIAN_FRONTEND noninteractive
-    
+ENV GOSU_VERSION 1.7
+
 RUN set -x \
         && apt update && apt install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
         && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
@@ -74,9 +73,13 @@ ENV MARIADB_VERSION 10.3.0+mariajessie
 #  libmariadbclient18 : Depends: libmysqlclient18 (= 5.5.42+maria-1wheezy) but 5.5.43-0+deb7u1 is to be installed
 
 RUN apt update && apt install -yf \
-    mariadb-server \
     percona-xtrabackup \
     percona-toolkit
+
+# Install MariaDB
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt install -yfq mariadb-server
+ENV DEBIAN_FRONTEND newt
 
 # CleanUP apt directory
 RUN rm -rv /var/lib/apt
