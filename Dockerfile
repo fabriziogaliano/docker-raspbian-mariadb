@@ -112,11 +112,11 @@ RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf \
         && echo 'skip-host-cache\nskip-name-resolve' | awk '{ print } $1 == "[mysqld]" && c == 0 { c = 1; system("cat") }' /etc/mysql/my.cnf > /tmp/my.cnf \
         && mv /tmp/my.cnf /etc/mysql/my.cnf
 
-VOLUME /var/lib/mysql
+#VOLUME /var/lib/mysql
 
-COPY docker-entrypoint.sh /usr/bin/
+COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["bash","/usr/local/bin/docker-entrypoint.sh"]
 
 EXPOSE 3306
 CMD ["mysqld"]
